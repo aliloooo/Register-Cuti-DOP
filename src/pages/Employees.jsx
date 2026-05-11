@@ -86,11 +86,7 @@ const Employees = () => {
         </motion.button>
       </div>
 
-      <motion.div 
-            Filter
-          </button>
-        </div>
-      </motion.div>
+
 
       <motion.div 
         initial={{ opacity: 0, y: 20 }}

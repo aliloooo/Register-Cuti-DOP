@@ -146,8 +146,14 @@ const UserLayout = ({ children }) => {
              <div className="w-12 h-12 bg-primary-600 rounded-2xl flex items-center justify-center text-white shadow-lg">
                <Settings size={24} />
              </div>
-             <h1 className="text-2xl font-bold text-slate-800 font-display">DOPsys</h1>
+             <h1 className="text-2xl font-bold text-slate-800 font-display">LeaveSys</h1>
           </div>
+          <button 
+            onClick={() => window.location.href = '/admin'}
+            className="text-xs font-bold text-slate-400 hover:text-primary-600 transition-colors uppercase tracking-widest"
+          >
+            Admin Portal
+          </button>
         </header>
         {children}
       </div>
