@@ -29,14 +29,14 @@ const AdminLayout = ({ children, activeTab, setActiveTab }) => {
   return (
     <div className="flex min-h-screen bg-[#fdfdfd]">
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
-      
+
       <main className="flex-1 ml-64 p-10">
 
         <header className="flex items-center justify-between mb-12">
           <div className="relative w-96 hidden md:block">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-            <input 
-              type="text" 
+            <input
+              type="text"
               placeholder="Quick search..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -45,7 +45,7 @@ const AdminLayout = ({ children, activeTab, setActiveTab }) => {
           </div>
           <div className="flex items-center gap-6">
             <div className="relative">
-              <button 
+              <button
                 onClick={() => {
                   setShowNotifications(!showNotifications);
                   if (!showNotifications) clearUnread();
@@ -133,7 +133,7 @@ const AdminLayout = ({ children, activeTab, setActiveTab }) => {
 
 const UserLayout = ({ children }) => {
   const { fetchEmployees } = useStore();
-  
+
   useEffect(() => {
     fetchEmployees();
   }, [fetchEmployees]);
@@ -143,17 +143,10 @@ const UserLayout = ({ children }) => {
       <div className="max-w-4xl mx-auto">
         <header className="flex items-center justify-between mb-16">
           <div className="flex items-center gap-3">
-             <div className="w-12 h-12 bg-primary-600 rounded-2xl flex items-center justify-center text-white shadow-lg">
-               <Settings size={24} />
-             </div>
-             <h1 className="text-2xl font-bold text-slate-800 font-display">LeaveSys</h1>
+            <div className="w-12 h-12 bg-primary-600 rounded-2xl flex items-center justify-center text-white shadow-lg">
+              <Settings size={24} />
+            </div>
           </div>
-          <button 
-            onClick={() => window.location.href = '/admin'}
-            className="text-xs font-bold text-slate-400 hover:text-primary-600 transition-colors uppercase tracking-widest"
-          >
-            Admin Portal
-          </button>
         </header>
         {children}
       </div>
@@ -163,7 +156,7 @@ const UserLayout = ({ children }) => {
 
 function AppContent() {
   const [activeTab, setActiveTab] = React.useState('dashboard');
-  
+
   return (
     <Routes>
       <Route path="/" element={<UserLayout><LeaveEntry /></UserLayout>} />
