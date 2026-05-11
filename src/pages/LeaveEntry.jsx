@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import SuccessModal from '../components/SuccessModal';
 
 const LeaveEntry = () => {
-  const { employees, addLeaveRequest } = useStore();
+  const { employees, leaveRequests, addLeaveRequest, fetchLeaveRequests } = useStore();
   const [formData, setFormData] = useState({
     employee_id: '',
     start_date: '',
@@ -15,6 +15,10 @@ const LeaveEntry = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+
+  React.useEffect(() => {
+    fetchLeaveRequests();
+  }, [fetchLeaveRequests]);
 
   const duration = useMemo(() => {
     if (formData.start_date && formData.end_date) {
@@ -26,6 +30,28 @@ const LeaveEntry = () => {
   const selectedEmployee = useMemo(() => {
     return employees.find(e => e.id === formData.employee_id);
   }, [formData.employee_id, employees]);
+
+  const quotaInfo = useMemo(() => {
+    if (!selectedEmployee) return { remaining: 0, label: '' };
+    const period = getLeavePeriod(selectedEmployee.tmt);
+    const used = leaveRequests
+      .filter(req => 
+        req.employee_id === selectedEmployee.id && 
+        new Date(req.start_date) >= period.start && 
+        new Date(req.start_date) <= period.end
+      )
+      .reduce((sum, req) => sum + req.total_days, 0);
+    
+    return {
+      remaining: Math.max(0, selectedEmployee.annual_leave_quota - used),
+      label: period.label
+    };
+  }, [selectedEmployee, leaveRequests]);
+
+  const canSubmit = useMemo(() => {
+    if (!selectedEmployee) return false;
+    return duration > 0 && duration <= quotaInfo.remaining;
+  }, [duration, quotaInfo.remaining, selectedEmployee]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -96,21 +122,23 @@ const LeaveEntry = () => {
                 exit={{ opacity: 0, height: 0 }}
                 className="overflow-hidden"
               >
-                <div className="p-5 bg-gradient-to-r from-primary-50 to-indigo-50/30 rounded-2xl border border-primary-100 flex items-center justify-between shadow-sm">
-                   <div className="flex items-center gap-4">
-                     <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-primary-600 shadow-sm">
-                       <User size={24} />
-                     </div>
-                     <div>
-                       <p className="text-[10px] font-bold text-primary-600 uppercase tracking-widest">Periode Aktif</p>
-                       <p className="text-sm font-bold text-slate-800">{getLeavePeriod(selectedEmployee.tmt).label}</p>
-                     </div>
-                   </div>
-                   <div className="text-right">
-                     <p className="text-[10px] font-bold text-primary-600 uppercase tracking-widest">Jabatan</p>
-                     <p className="text-sm font-bold text-slate-800">{selectedEmployee.position}</p>
-                   </div>
-                </div>
+                 <div className="p-5 bg-gradient-to-r from-primary-50 to-indigo-50/30 rounded-2xl border border-primary-100 flex items-center justify-between shadow-sm">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-primary-600 shadow-sm">
+                        <User size={24} />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-bold text-primary-600 uppercase tracking-widest">Periode Aktif</p>
+                        <p className="text-sm font-bold text-slate-800">{quotaInfo.label}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-[10px] font-bold text-primary-600 uppercase tracking-widest">Sisa Jatah</p>
+                      <p className={`text-sm font-bold ${quotaInfo.remaining <= 0 ? 'text-red-500' : 'text-slate-800'}`}>
+                        {quotaInfo.remaining} Hari
+                      </p>
+                    </div>
+                 </div>
               </motion.div>
             )}
           </AnimatePresence>
@@ -172,12 +200,12 @@ const LeaveEntry = () => {
           </div>
 
           <motion.button 
-            whileHover={{ scale: 1.01 }}
-            whileTap={{ scale: 0.98 }}
+            whileHover={canSubmit && !isSubmitting ? { scale: 1.01 } : {}}
+            whileTap={canSubmit && !isSubmitting ? { scale: 0.98 } : {}}
             type="submit"
-            disabled={isSubmitting || duration <= 0}
+            disabled={isSubmitting || !canSubmit}
             className={`w-full py-5 rounded-2xl font-bold text-white shadow-2xl flex items-center justify-center gap-3 transition-all ${
-              isSubmitting ? 'bg-slate-400 cursor-not-allowed' : 'bg-gradient-to-r from-primary-600 to-primary-500 shadow-primary-500/30'
+              !canSubmit || isSubmitting ? 'bg-slate-400 cursor-not-allowed grayscale' : 'bg-gradient-to-r from-primary-600 to-primary-500 shadow-primary-500/30'
             }`}
           >
             {success ? (
@@ -192,6 +220,12 @@ const LeaveEntry = () => {
           {duration <= 0 && formData.start_date && formData.end_date && (
             <div className="flex items-center gap-2 text-red-500 text-[10px] font-bold uppercase tracking-wider justify-center">
               <AlertCircle size={14} /> Tanggal mulai harus sebelum atau sama dengan tanggal selesai
+            </div>
+          )}
+
+          {selectedEmployee && duration > quotaInfo.remaining && (
+            <div className="flex items-center gap-2 text-red-500 text-[10px] font-bold uppercase tracking-wider justify-center">
+              <AlertCircle size={14} /> Jatah cuti tidak mencukupi (Sisa: {quotaInfo.remaining} hari)
             </div>
           )}
         </form>

@@ -82,10 +82,6 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
       </div>
 
       <div className="mt-auto p-8 pt-4 space-y-2">
-        <button className="sidebar-item group w-full">
-          <Settings size={20} className="text-slate-400" />
-          <span className="text-sm font-semibold tracking-tight">Settings</span>
-        </button>
         <button 
           onClick={handleLogout}
           className="sidebar-item group w-full text-red-500 hover:text-red-600 hover:bg-red-50/50"
