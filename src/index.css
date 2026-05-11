@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-color: #0ea5e9;
+  --bg-color: #f8fafc;
+}
+
+@layer base {
+  body {
+    @apply bg-[#fdfdfd] text-slate-900 antialiased;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  h1, h2, h3, h4, .font-display {
+    font-family: 'Outfit', sans-serif;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-white/70 backdrop-blur-xl border border-white/40 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] rounded-2xl transition-all duration-300;
+  }
+
+  .glass-card:hover {
+    @apply shadow-[0_8px_32px_0_rgba(31,38,135,0.12)] border-white/60;
+  }
+  
+  .sidebar-item {
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 text-slate-500 hover:bg-white hover:text-primary-600 hover:shadow-sm relative overflow-hidden;
+  }
+  
+  .sidebar-item::after {
+    content: '';
+    @apply absolute left-0 top-1/2 -translate-y-1/2 w-1 h-0 bg-primary-500 rounded-r-full transition-all duration-300 opacity-0;
+  }
+
+  .sidebar-item.active {
+    @apply bg-white text-primary-600 shadow-sm font-semibold;
+  }
+
+  .sidebar-item.active::after {
+    @apply h-6 opacity-100;
+  }
+
+  .btn-primary {
+    @apply bg-gradient-to-r from-primary-600 to-primary-500 text-white px-5 py-2.5 rounded-xl hover:shadow-lg hover:shadow-primary-500/30 transition-all duration-300 active:scale-95 font-medium flex items-center gap-2;
+  }
+
+  .table-container {
+    @apply bg-white rounded-2xl shadow-sm border border-slate-200/60 overflow-hidden;
+  }
+
+  .data-table th {
+    @apply px-6 py-4 text-left text-[11px] font-bold text-slate-400 uppercase tracking-[0.1em] bg-slate-50/50 border-b border-slate-100;
+  }
+
+  .data-table td {
+    @apply px-6 py-4 text-sm text-slate-600 border-b border-slate-50/80;
+  }
+
+  .data-table tr:last-child td {
+    @apply border-b-0;
+  }
+
+  .data-table tr:hover {
+    @apply bg-slate-50/30;
+  }
+
+  .stat-icon-wrapper {
+    @apply p-3 rounded-2xl shadow-inner transition-transform duration-300 group-hover:scale-110;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-200 rounded-full hover:bg-slate-300 transition-colors;
+}
