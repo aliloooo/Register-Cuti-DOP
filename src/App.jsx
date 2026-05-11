@@ -11,7 +11,7 @@ import { Bell, Search, Settings } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const AdminLayout = ({ children, activeTab, setActiveTab }) => {
-  const { isAuthenticated, fetchEmployees, fetchLeaveRequests, notifications, unreadCount, clearUnread, searchTerm, setSearchTerm } = useStore();
+  const { isAuthenticated, isAuthLoading, fetchEmployees, fetchLeaveRequests, notifications, unreadCount, clearUnread, searchTerm, setSearchTerm } = useStore();
   const [showNotifications, setShowNotifications] = React.useState(false);
   const hasCredentials = import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY;
 
@@ -21,6 +21,17 @@ const AdminLayout = ({ children, activeTab, setActiveTab }) => {
       fetchLeaveRequests();
     }
   }, [isAuthenticated, fetchEmployees, fetchLeaveRequests]);
+
+  if (isAuthLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#fdfdfd]">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-primary-100 border-t-primary-600 rounded-full animate-spin"></div>
+          <p className="text-sm font-bold text-slate-400 animate-pulse uppercase tracking-widest">Memuat Sesi...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;

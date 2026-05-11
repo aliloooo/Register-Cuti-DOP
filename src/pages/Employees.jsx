@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useStore } from '../store/useStore';
 import { getLeavePeriod } from '../lib/leaveLogic';
 import { Plus, Search, Filter, MoreHorizontal, User, Trash2, Edit2 } from 'lucide-react';
@@ -14,12 +14,30 @@ const Employees = () => {
   const [newEmp, setNewEmp] = useState({
     name: '', position: '', pn: '', team: '', tmt: '', annual_leave_quota: 12
   });
+  
+  const [filterTeam, setFilterTeam] = useState('All');
+  const [filterPosition, setFilterPosition] = useState('All');
 
-  const filteredEmployees = employees.filter(emp => 
-    emp.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    emp.pn.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    emp.team?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const teams = useMemo(() => {
+    const set = new Set(employees.map(emp => emp.team).filter(Boolean));
+    return ['All', ...Array.from(set).sort()];
+  }, [employees]);
+
+  const positions = useMemo(() => {
+    const set = new Set(employees.map(emp => emp.position).filter(Boolean));
+    return ['All', ...Array.from(set).sort()];
+  }, [employees]);
+
+  const filteredEmployees = employees.filter(emp => {
+    const matchesSearch = emp.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         emp.pn.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         emp.team?.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesTeam = filterTeam === 'All' || emp.team === filterTeam;
+    const matchesPosition = filterPosition === 'All' || emp.position === filterPosition;
+    
+    return matchesSearch && matchesTeam && matchesPosition;
+  });
 
   const handleAddEmployee = async (e) => {
     e.preventDefault();
@@ -87,6 +105,53 @@ const Employees = () => {
       </div>
 
 
+      <motion.div 
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="flex flex-wrap items-center gap-4 bg-white p-5 rounded-3xl shadow-sm border border-slate-100"
+      >
+        <div className="flex items-center gap-2 text-slate-400 mr-2">
+          <Filter size={16} />
+          <span className="text-[10px] font-bold uppercase tracking-widest">Filter Data:</span>
+        </div>
+        
+        <div className="flex-1 flex flex-wrap gap-4">
+          <div className="flex flex-col gap-1.5 min-w-[160px]">
+            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter ml-1">Berdasarkan Tim</span>
+            <select 
+              value={filterTeam}
+              onChange={(e) => setFilterTeam(e.target.value)}
+              className="bg-slate-50 border border-slate-100 rounded-xl px-4 py-2 text-xs font-bold text-slate-600 outline-none focus:ring-2 focus:ring-primary-500/20 transition-all cursor-pointer"
+            >
+              {teams.map(t => <option key={t} value={t}>{t}</option>)}
+            </select>
+          </div>
+
+          <div className="flex flex-col gap-1.5 min-w-[160px]">
+            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter ml-1">Berdasarkan Jabatan</span>
+            <select 
+              value={filterPosition}
+              onChange={(e) => setFilterPosition(e.target.value)}
+              className="bg-slate-50 border border-slate-100 rounded-xl px-4 py-2 text-xs font-bold text-slate-600 outline-none focus:ring-2 focus:ring-primary-500/20 transition-all cursor-pointer"
+            >
+              {positions.map(p => <option key={p} value={p}>{p}</option>)}
+            </select>
+          </div>
+        </div>
+
+        {(filterTeam !== 'All' || filterPosition !== 'All') && (
+          <button 
+            onClick={() => {
+              setFilterTeam('All');
+              setFilterPosition('All');
+            }}
+            className="text-[10px] font-bold text-primary-600 hover:text-primary-700 bg-primary-50 px-4 py-2 rounded-xl transition-all"
+          >
+            Reset Filter
+          </button>
+        )}
+      </motion.div>
 
       <motion.div 
         initial={{ opacity: 0, y: 20 }}

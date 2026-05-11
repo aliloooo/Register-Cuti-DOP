@@ -8,6 +8,7 @@ export const useStore = create((set, get) => ({
   error: null,
   isAuthenticated: false,
   user: null,
+  isAuthLoading: true,
   notifications: [],
   unreadCount: 0,
   searchTerm: '',
@@ -37,12 +38,18 @@ export const useStore = create((set, get) => ({
   },
 
   checkAuth: async () => {
-    if (!isSupabaseConfigured) return;
+    if (!isSupabaseConfigured) {
+      set({ isAuthLoading: false });
+      return;
+    }
+    
+    set({ isAuthLoading: true });
     const { data: { session } } = await supabase.auth.getSession();
+    
     if (session) {
-      set({ user: session.user, isAuthenticated: true });
+      set({ user: session.user, isAuthenticated: true, isAuthLoading: false });
     } else {
-      set({ user: null, isAuthenticated: false });
+      set({ user: null, isAuthenticated: false, isAuthLoading: false });
     }
   },
 
