@@ -143,9 +143,6 @@ const UserLayout = ({ children }) => {
       <div className="max-w-4xl mx-auto">
         <header className="flex items-center justify-between mb-16">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-primary-600 rounded-2xl flex items-center justify-center text-white shadow-lg">
-              <Settings size={24} />
-            </div>
           </div>
         </header>
         {children}
