@@ -35,13 +35,13 @@ const LeaveEntry = () => {
     if (!selectedEmployee) return { remaining: 0, label: '' };
     const period = getLeavePeriod(selectedEmployee.tmt);
     const used = leaveRequests
-      .filter(req => 
-        req.employee_id === selectedEmployee.id && 
-        new Date(req.start_date) >= period.start && 
+      .filter(req =>
+        req.employee_id === selectedEmployee.id &&
+        new Date(req.start_date) >= period.start &&
         new Date(req.start_date) <= period.end
       )
       .reduce((sum, req) => sum + req.total_days, 0);
-    
+
     return {
       remaining: Math.max(0, selectedEmployee.annual_leave_quota - used),
       label: period.label
@@ -56,7 +56,7 @@ const LeaveEntry = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (duration <= 0) return alert('Tanggal tidak valid');
-    
+
     setIsSubmitting(true);
     const { error } = await addLeaveRequest({
       ...formData,
@@ -75,16 +75,16 @@ const LeaveEntry = () => {
 
   return (
     <div className="max-w-3xl mx-auto py-4">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         className="text-center mb-10"
       >
-        <h2 className="text-3xl font-bold text-slate-800 font-display tracking-tight">Input Permohonan Cuti</h2>
+        <h2 className="text-3xl font-bold text-slate-800 font-display tracking-tight">Input Register Cuti</h2>
         <p className="text-slate-500 font-medium">Catat penggunaan jatah cuti karyawan secara digital</p>
       </motion.div>
 
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.1 }}
@@ -97,11 +97,11 @@ const LeaveEntry = () => {
               <User size={14} /> Pilih Karyawan
             </label>
             <div className="relative">
-              <select 
+              <select
                 required
                 className="w-full px-5 py-4 bg-slate-50/50 border border-slate-100 rounded-2xl focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 outline-none text-sm font-semibold appearance-none transition-all cursor-pointer"
                 value={formData.employee_id}
-                onChange={e => setFormData({...formData, employee_id: e.target.value})}
+                onChange={e => setFormData({ ...formData, employee_id: e.target.value })}
               >
                 <option value="">-- Cari Nama Karyawan --</option>
                 {employees.map(emp => (
@@ -116,29 +116,29 @@ const LeaveEntry = () => {
 
           <AnimatePresence mode="wait">
             {selectedEmployee && (
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
                 className="overflow-hidden"
               >
-                 <div className="p-5 bg-gradient-to-r from-primary-50 to-indigo-50/30 rounded-2xl border border-primary-100 flex items-center justify-between shadow-sm">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-primary-600 shadow-sm">
-                        <User size={24} />
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-bold text-primary-600 uppercase tracking-widest">Periode Aktif</p>
-                        <p className="text-sm font-bold text-slate-800">{quotaInfo.label}</p>
-                      </div>
+                <div className="p-5 bg-gradient-to-r from-primary-50 to-indigo-50/30 rounded-2xl border border-primary-100 flex items-center justify-between shadow-sm">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-primary-600 shadow-sm">
+                      <User size={24} />
                     </div>
-                    <div className="text-right">
-                      <p className="text-[10px] font-bold text-primary-600 uppercase tracking-widest">Sisa Jatah</p>
-                      <p className={`text-sm font-bold ${quotaInfo.remaining <= 0 ? 'text-red-500' : 'text-slate-800'}`}>
-                        {quotaInfo.remaining} Hari
-                      </p>
+                    <div>
+                      <p className="text-[10px] font-bold text-primary-600 uppercase tracking-widest">Periode Aktif</p>
+                      <p className="text-sm font-bold text-slate-800">{quotaInfo.label}</p>
                     </div>
-                 </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-[10px] font-bold text-primary-600 uppercase tracking-widest">Sisa Jatah</p>
+                    <p className={`text-sm font-bold ${quotaInfo.remaining <= 0 ? 'text-red-500' : 'text-slate-800'}`}>
+                      {quotaInfo.remaining} Hari
+                    </p>
+                  </div>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
@@ -149,24 +149,24 @@ const LeaveEntry = () => {
               <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 px-1">
                 <Calendar size={14} /> Tanggal Mulai
               </label>
-              <input 
-                type="date" 
+              <input
+                type="date"
                 required
                 className="w-full px-5 py-4 bg-slate-50/50 border border-slate-100 rounded-2xl focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 outline-none text-sm font-semibold transition-all"
                 value={formData.start_date}
-                onChange={e => setFormData({...formData, start_date: e.target.value})}
+                onChange={e => setFormData({ ...formData, start_date: e.target.value })}
               />
             </div>
             <div className="space-y-3">
               <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 px-1">
                 <Calendar size={14} /> Tanggal Selesai
               </label>
-              <input 
-                type="date" 
+              <input
+                type="date"
                 required
                 className="w-full px-5 py-4 bg-slate-50/50 border border-slate-100 rounded-2xl focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 outline-none text-sm font-semibold transition-all"
                 value={formData.end_date}
-                onChange={e => setFormData({...formData, end_date: e.target.value})}
+                onChange={e => setFormData({ ...formData, end_date: e.target.value })}
               />
             </div>
           </div>
@@ -190,23 +190,22 @@ const LeaveEntry = () => {
             <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 px-1">
               <FileText size={14} /> Keterangan Keperluan
             </label>
-            <textarea 
+            <textarea
               rows="3"
               placeholder="Contoh: Cuti Tahunan, Menghadiri Acara Keluarga, dll..."
               className="w-full px-5 py-4 bg-slate-50/50 border border-slate-100 rounded-2xl focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 outline-none text-sm font-semibold resize-none transition-all placeholder:text-slate-300"
               value={formData.description}
-              onChange={e => setFormData({...formData, description: e.target.value})}
+              onChange={e => setFormData({ ...formData, description: e.target.value })}
             ></textarea>
           </div>
 
-          <motion.button 
+          <motion.button
             whileHover={canSubmit && !isSubmitting ? { scale: 1.01 } : {}}
             whileTap={canSubmit && !isSubmitting ? { scale: 0.98 } : {}}
             type="submit"
             disabled={isSubmitting || !canSubmit}
-            className={`w-full py-5 rounded-2xl font-bold text-white shadow-2xl flex items-center justify-center gap-3 transition-all ${
-              !canSubmit || isSubmitting ? 'bg-slate-400 cursor-not-allowed grayscale' : 'bg-gradient-to-r from-primary-600 to-primary-500 shadow-primary-500/30'
-            }`}
+            className={`w-full py-5 rounded-2xl font-bold text-white shadow-2xl flex items-center justify-center gap-3 transition-all ${!canSubmit || isSubmitting ? 'bg-slate-400 cursor-not-allowed grayscale' : 'bg-gradient-to-r from-primary-600 to-primary-500 shadow-primary-500/30'
+              }`}
           >
             {success ? (
               <><CheckCircle2 size={22} /> Berhasil Tersimpan!</>
@@ -231,8 +230,8 @@ const LeaveEntry = () => {
         </form>
       </motion.div>
 
-      <SuccessModal 
-        isOpen={success} 
+      <SuccessModal
+        isOpen={success}
         onClose={() => setSuccess(false)}
         title="Pengajuan Berhasil!"
         message="Permohonan cuti karyawan telah berhasil dicatat ke dalam database."
