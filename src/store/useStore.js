@@ -32,6 +32,16 @@ export const useStore = create((set, get) => ({
     return { data, error: null };
   },
 
+  updatePassword: async (newPassword) => {
+    if (!isSupabaseConfigured) return { error: { message: 'Database not configured' } };
+    set({ loading: true, error: null });
+    const { data, error } = await supabase.auth.updateUser({
+      password: newPassword
+    });
+    set({ loading: false });
+    return { data, error };
+  },
+
   logout: async () => {
     if (!isSupabaseConfigured) return;
     await supabase.auth.signOut();

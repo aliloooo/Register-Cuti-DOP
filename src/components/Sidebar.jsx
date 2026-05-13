@@ -20,6 +20,7 @@ const Sidebar = ({ activeTab, setActiveTab, isOpen, setIsOpen }) => {
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'employees', label: 'Data Karyawan', icon: Users },
     { id: 'recap', label: 'Rekap Cuti', icon: FileSpreadsheet },
+    { id: 'settings', label: 'Settings', icon: Settings },
   ];
 
   const MenuItem = ({ item, index }) => (

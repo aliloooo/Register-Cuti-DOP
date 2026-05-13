@@ -5,9 +5,10 @@ import Dashboard from './pages/Dashboard';
 import Employees from './pages/Employees';
 import LeaveEntry from './pages/LeaveEntry';
 import Recap from './pages/Recap';
+import Settings from './pages/Settings';
 import Login from './pages/Login';
 import { useStore } from './store/useStore';
-import { Bell, Search, Settings, Menu } from 'lucide-react';
+import { Bell, Search, Settings as SettingsIcon, Menu } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const AdminLayout = ({ children, activeTab, setActiveTab }) => {
@@ -196,6 +197,7 @@ function AppContent() {
           {activeTab === 'employees' && <Employees />}
           {activeTab === 'input' && <LeaveEntry />}
           {activeTab === 'recap' && <Recap />}
+          {activeTab === 'settings' && <Settings />}
         </AdminLayout>
       } />
       <Route path="*" element={<Navigate to="/" replace />} />
