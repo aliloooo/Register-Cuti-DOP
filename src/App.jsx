@@ -7,12 +7,13 @@ import LeaveEntry from './pages/LeaveEntry';
 import Recap from './pages/Recap';
 import Login from './pages/Login';
 import { useStore } from './store/useStore';
-import { Bell, Search, Settings } from 'lucide-react';
+import { Bell, Search, Settings, Menu } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const AdminLayout = ({ children, activeTab, setActiveTab }) => {
   const { isAuthenticated, isAuthLoading, fetchEmployees, fetchLeaveRequests, notifications, unreadCount, clearUnread, searchTerm, setSearchTerm } = useStore();
   const [showNotifications, setShowNotifications] = React.useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
   const hasCredentials = import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY;
 
   useEffect(() => {
@@ -38,13 +39,28 @@ const AdminLayout = ({ children, activeTab, setActiveTab }) => {
   }
 
   return (
-    <div className="flex min-h-screen bg-[#fdfdfd]">
-      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+    <div className="flex min-h-screen bg-[#fdfdfd] relative overflow-x-hidden">
+      {/* Mobile Sidebar Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-slate-900/50 z-30 md:hidden backdrop-blur-sm transition-opacity"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
 
-      <main className="flex-1 ml-64 p-10">
+      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
 
-        <header className="flex items-center justify-between mb-12">
-          <div className="relative w-96 hidden md:block">
+      <main className="flex-1 md:ml-64 p-5 md:p-10 w-full max-w-[100vw]">
+
+        <header className="flex items-center justify-between mb-8 md:mb-12 gap-4">
+          <div className="flex items-center gap-3">
+            <button 
+              className="md:hidden p-2 text-slate-500 hover:bg-slate-100 rounded-xl transition-colors"
+              onClick={() => setIsSidebarOpen(true)}
+            >
+              <Menu size={24} />
+            </button>
+            <div className="relative w-full max-w-xs md:w-96 hidden sm:block">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
             <input
               type="text"
@@ -53,6 +69,7 @@ const AdminLayout = ({ children, activeTab, setActiveTab }) => {
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-12 pr-4 py-3 bg-white border border-slate-100 rounded-2xl focus:ring-4 focus:ring-primary-500/10 transition-all text-sm shadow-sm outline-none font-medium"
             />
+          </div>
           </div>
           <div className="flex items-center gap-6">
             <div className="relative">

@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { useStore } from '../store/useStore';
 import { useNavigate } from 'react-router-dom';
 
-const Sidebar = ({ activeTab, setActiveTab }) => {
+const Sidebar = ({ activeTab, setActiveTab, isOpen, setIsOpen }) => {
   const logout = useStore(state => state.logout);
   const navigate = useNavigate();
 
@@ -27,7 +27,10 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
       initial={{ opacity: 0, x: -10 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: index * 0.1 }}
-      onClick={() => setActiveTab(item.id)}
+      onClick={() => {
+        setActiveTab(item.id);
+        if (setIsOpen) setIsOpen(false);
+      }}
       className={`sidebar-item group w-full ${activeTab === item.id ? 'active' : ''}`}
     >
       <item.icon size={20} className={activeTab === item.id ? 'text-primary-600' : 'text-slate-400 group-hover:text-primary-500'} />
@@ -36,7 +39,7 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
   );
 
   return (
-    <aside className="w-64 h-screen bg-[#fdfdfd] border-r border-slate-100 flex flex-col fixed left-0 top-0 z-20">
+    <aside className={`w-64 h-screen bg-[#fdfdfd] border-r border-slate-100 flex flex-col fixed left-0 top-0 z-40 transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}>
       <div className="p-8 pb-4">
         <motion.div 
           initial={{ opacity: 0, x: -20 }}
