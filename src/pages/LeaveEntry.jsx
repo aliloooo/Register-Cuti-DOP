@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import SuccessModal from '../components/SuccessModal';
 
 const LeaveEntry = () => {
-  const { employees, leaveRequests, addLeaveRequest, fetchLeaveRequests } = useStore();
+  const { employees, leaveRequests, addLeaveRequest, fetchLeaveRequests, fetchEmployees } = useStore();
   const [formData, setFormData] = useState({
     employee_id: '',
     start_date: '',
@@ -18,8 +18,9 @@ const LeaveEntry = () => {
   const [monitoringSearch, setMonitoringSearch] = useState('');
 
   React.useEffect(() => {
+    fetchEmployees();
     fetchLeaveRequests();
-  }, [fetchLeaveRequests]);
+  }, [fetchEmployees, fetchLeaveRequests]);
 
   const duration = useMemo(() => {
     if (formData.start_date && formData.end_date) {

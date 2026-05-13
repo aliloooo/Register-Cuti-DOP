@@ -11,7 +11,10 @@ import { Bell, Search, Settings, Menu } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const AdminLayout = ({ children, activeTab, setActiveTab }) => {
-  const { isAuthenticated, isAuthLoading, fetchEmployees, fetchLeaveRequests, notifications, unreadCount, clearUnread, searchTerm, setSearchTerm } = useStore();
+  const { 
+    isAuthenticated, isAuthLoading, fetchEmployees, fetchLeaveRequests, fetchJointLeaves, 
+    notifications, unreadCount, clearUnread, searchTerm, setSearchTerm 
+  } = useStore();
   const [showNotifications, setShowNotifications] = React.useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
   const hasCredentials = import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -20,8 +23,9 @@ const AdminLayout = ({ children, activeTab, setActiveTab }) => {
     if (isAuthenticated) {
       fetchEmployees();
       fetchLeaveRequests();
+      fetchJointLeaves();
     }
-  }, [isAuthenticated, fetchEmployees, fetchLeaveRequests]);
+  }, [isAuthenticated, fetchEmployees, fetchLeaveRequests, fetchJointLeaves]);
 
   if (isAuthLoading) {
     return (
